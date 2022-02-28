@@ -2,4 +2,10 @@
 
 ## Requerimientos
 
-- Python
+- Python3
+- Scrapy Framework
+
+    ```
+    pip install Scrapy
+
+    ```
