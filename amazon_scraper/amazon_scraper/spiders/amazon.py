@@ -1,7 +1,7 @@
 import scrapy, re                              
 from urllib.parse import urlencode, urljoin     
 
-API_KEY = 'd0f7996203a08327d1821be5ae8e9a9c'   #crear una cuenta en Scraper API (u otro API) para obtener la clave de la API( scraperapi.com)  Scraper API brinda diferentes direcciones IP (proxyes) para poder realizar el scraping en sitios como Amazon.
+API_KEY = ''   #crear una cuenta en Scraper API (u otro API) para obtener la clave de la API( scraperapi.com)  Scraper API brinda diferentes direcciones IP (proxyes) para poder realizar el scraping en sitios como Amazon.
 
 def get_url(url):       #Modifica la url para conectar con la API
     payload = {'api_key': API_KEY, 'url': url, 'country_code': 'us'}
