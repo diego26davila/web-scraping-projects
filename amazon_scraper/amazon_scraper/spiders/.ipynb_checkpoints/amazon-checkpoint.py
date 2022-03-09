@@ -1,7 +1,7 @@
 import scrapy, re                              
 from urllib.parse import urlencode, urljoin     
 
-API_KEY = ''   #crear una cuenta en Scraper API (u otro API) para obtener la clave de la API( scraperapi.com)  Scraper API brinda diferentes direcciones IP (proxyes) para poder realizar el scraping en sitios como Amazon.
+API_KEY = 'd0f7996203a08327d1821be5ae8e9a9c'   #crear una cuenta en Scraper API (u otro API) para obtener la clave de la API( scraperapi.com)  Scraper API brinda diferentes direcciones IP (proxyes) para poder realizar el scraping en sitios como Amazon.
 
 def get_url(url):       #Modifica la url para conectar con la API
     payload = {'api_key': API_KEY, 'url': url, 'country_code': 'us'}
@@ -87,59 +87,75 @@ class AmazonSpider(scrapy.Spider):
         xp_desc = '//div[@id="productDescription"]/p//text()'
         desc = response.xpath(xp_desc).extract()  
         
-        xp_desc_cpu4 = '//div[@id="productDescription"]/p//*[contains(text(),"rocessor") or contains(text(),"CPU")]/text()'
-        texto_header = response.xpath(xp_desc_cpu4).extract_first()
+        xp_desc_cpu1 = '//div[@id="productDescription"]/p//*[contains(text(),"rocessor") or contains(text(),"CPU")]/text()'
+        texto_header = response.xpath(xp_desc_cpu1).extract_first()
         if texto_header:
             desc_cpu = [desc[desc.index(texto_header) + 1]]
         
-        xp_desc_gpu4 = '//div[@id="productDescription"]/p//*[contains(text(),"raphics") or contains(text(),"ideo:")]/text()'
-        texto_header = response.xpath(xp_desc_gpu4).extract_first()
+        xp_desc_gpu1 = '//div[@id="productDescription"]/p//*[contains(text(),"raphics") or contains(text(),"ideo:")]/text()'
+        texto_header = response.xpath(xp_desc_gpu1).extract_first()
         if texto_header:
             desc_gpu = [desc[desc.index(texto_header) + 1]]
         
-        xp_desc_ram4 = '//div[@id="productDescription"]/p//*[contains(text(),"Memory")]/text()'
-        texto_header = response.xpath(xp_desc_ram4).extract_first()
+        xp_desc_ram1 = '//div[@id="productDescription"]/p//*[contains(text(),"Memory")]/text()'
+        texto_header = response.xpath(xp_desc_ram1).extract_first()
         if texto_header:
             desc_ram = [desc[desc.index(texto_header) + 1]]
         
-        xp_desc_disc4 = '//div[@id="productDescription"]/p//*[contains(text(),"Hard ") or contains(text(), "torage")]/text()'
-        texto_header = response.xpath(xp_desc_disc4).extract_first()
+        xp_desc_disc1 = '//div[@id="productDescription"]/p//*[contains(text(),"Hard ") or contains(text(), "torage")]/text()'
+        texto_header = response.xpath(xp_desc_disc1).extract_first()
         if texto_header:
             if len(texto_header.split()) <= 2:
                 desc_disc = [desc[desc.index(texto_header) + 1]]
             else:
                 desc_disc = [desc[desc.index(texto_header)]]
                 
-        #1)
+        #2)
+        if desc_cpu == [] or desc_cpu == [':']:
+            xp_desc_cpu2 = '//div[@id="productDescription"]//strong[contains(text(),"rocessor") or contains(text(), "CPU")]/parent::p/text()'
+            desc_cpu = response.xpath(xp_desc_cpu2).extract()
+        
+        if desc_gpu == [] or desc_gpu == [':']:
+            xp_desc_gpu2 = '//div[@id="productDescription"]//strong[contains(text(),"raphics") or contains(text(),"ideo:")]/parent::p/text()'
+            desc_gpu = response.xpath(xp_desc_gpu2).extract()
+            
+        if desc_ram == [] or desc_ram == [':']:
+            xp_desc_ram2 = '//div[@id="productDescription"]//strong[contains(text(),"Memory")]/parent::p/text()'
+            desc_ram = response.xpath(xp_desc_ram2).extract()
+            
+        if desc_disc == [] or desc_disc == [':']:
+            xp_desc_disc2 = '//div[@id="productDescription"]//strong[contains(text(),"Hard ") or contains(text(), "torage")]/parent::p/text()'
+            desc_disc = response.xpath(xp_desc_disc2).extract()
+        
+        
+        #3)
         if desc_cpu == []:
-            xp_desc_cpu1 = '//div[@id="productDescription"]//strong[contains(text(),"rocessor") or contains(text(), "CPU")]/parent::p/text()'
-            desc_cpu = response.xpath(xp_desc_cpu1).extract()
+            xp_desc_cpu3 = '//div[@id="feature-bullets"]//li//*[contains(text(),"rocessor") or contains(text(), "CPU")]/text()'
+            desc_cpu = response.xpath(xp_desc_cpu3).extract()
         
         if desc_gpu == []:
-            xp_desc_gpu1 = '//div[@id="productDescription"]//strong[contains(text(),"raphics") or contains(text(),"ideo:")]/parent::p/text()'
-            desc_gpu = response.xpath(xp_desc_gpu1).extract()
+            xp_desc_gpu3 = '//div[@id="feature-bullets"]//li//*[contains(text(),"raphics") or contains(text(),"GPU")]/text()'
+            desc_gpu = response.xpath(xp_desc_gpu3).extract()
             
         if desc_ram == []:
-            xp_desc_ram1 = '//div[@id="productDescription"]//strong[contains(text(),"Memory")]/parent::p/text()'
-            desc_ram = response.xpath(xp_desc_ram1).extract()
+            xp_desc_ram3 = '//div[@id="feature-bullets"]//li//*[contains(text(),"emory") or contains(text(),"RAM")]/text()'
+            desc_ram = response.xpath(xp_desc_ram3).extract()
             
         if desc_disc == []:
-            xp_desc_disc1 = '//div[@id="productDescription"]//strong[contains(text(),"Hard ") or contains(text(), "torage")]/parent::p/text()'
-            desc_disc = response.xpath(xp_desc_disc1).extract()
-        
-        
-        #2)
-        
-        if desc_cpu == [] and desc_gpu == [] and desc_ram == [] and desc_disc == []:
-            xp_desc_cpu3 = '//div[@id="productDescription"]//b[contains(text(),"rocessor") or contains(text(), "CPU")]/parent::li/text()'
-            xp_desc_gpu3 = '//div[@id="productDescription"]//b[contains(text(),"raphics") or contains(text(),"ideo:")]/parent::li/text()'
-            xp_desc_ram3 = '//div[@id="productDescription"]//b[contains(text(),"Memory")]/parent::li/text()'
-            xp_desc_disc3 = '//div[@id="productDescription"]//b[contains(text(),"Hard ") or contains(text(), "torage")]/parent::li/text()'
-
-            desc_cpu = response.xpath(xp_desc_cpu3).extract()
-            desc_gpu = response.xpath(xp_desc_gpu3).extract()
-            desc_ram = response.xpath(xp_desc_ram3).extract()
+            xp_desc_disc3 = '//div[@id="feature-bullets"]//li//*[contains(text(),"ard ") or contains(text(), "torage")]/text()'
             desc_disc = response.xpath(xp_desc_disc3).extract()
+        
+        #4)
+        if desc_cpu == [] and desc_gpu == [] and desc_ram == [] and desc_disc == []:
+            xp_desc_cpu4 = '//div[@id="productDescription"]//b[contains(text(),"rocessor") or contains(text(), "CPU")]/parent::li/text()'
+            xp_desc_gpu4 = '//div[@id="productDescription"]//b[contains(text(),"raphics") or contains(text(),"ideo:")]/parent::li/text()'
+            xp_desc_ram4 = '//div[@id="productDescription"]//b[contains(text(),"Memory")]/parent::li/text()'
+            xp_desc_disc4 = '//div[@id="productDescription"]//b[contains(text(),"Hard ") or contains(text(), "torage")]/parent::li/text()'
+
+            desc_cpu = response.xpath(xp_desc_cpu4).extract()
+            desc_gpu = response.xpath(xp_desc_gpu4).extract()
+            desc_ram = response.xpath(xp_desc_ram4).extract()
+            desc_disc = response.xpath(xp_desc_disc4).extract()
 
     
 
@@ -150,9 +166,9 @@ class AmazonSpider(scrapy.Spider):
         
         cpu = []
         if values_set[0] != []:
-            cpu = re.findall('(?<=GHz)\s*\w+\d*',values_set[0][0])
-        
-        
+            cpu = re.findall('(?<=GHz)\s*\w+\d*|(?<=hertz)\s*\w+\d*',values_set[0][0])
+            if cpu == []:
+                cpu = values_set[0]
 
         #DATOS_MEMORIA_RAM
         
@@ -160,9 +176,19 @@ class AmazonSpider(scrapy.Spider):
         ram_gen = []   
         if values_set[7] != []:   #Se extrae del valor del atributo 'RAM' (values_set[7]) Solo la capacidad en GB y el tipo de RAM
             value = values_set[7][0]
-            ram_gb = [re.findall('[0-9]+', value)[0]]  #Se utilizan 'regular expressions - regex' para extraer el texto deseado
+            ram_info = re.findall('[0-9]+', value)
             ram_gen = re.findall('(?i)(?<=gb).*DDR.*', value)
             
+            if ram_info != []:
+                ram_gb = [ram_info[0]]  #Se utilizan 'regular expressions - regex' para extraer el texto deseado
+            
+            if ram_info == [] and titulo != []:
+                ram_info = re.findall('(?i)\d+\s*gb\s*\w*ram\w*', titulo[0])
+                
+                if ram_info != []:
+                    ram_gb = re.findall('\d+', ram_info[0])
+            
+                   
             if ram_gen == []:     #Si no se encuentra el tipo de RAM se extrae este dato del valor del atributo 'Computer Memory Type' (values_Set[7])
                 if values_set[6] != []:   
                     ram_gen = re.findall('.*DDR\w*',values_set[6][0])
@@ -176,13 +202,26 @@ class AmazonSpider(scrapy.Spider):
         
         
         
+        
+        
         tipo_disco = []
         if titulo != []:
-            match_tipo_disco = re.findall('(?i)emmc|ssd|hdd', titulo[0])
-            if len(match_tipo_disco) > 1: 
+            match_tipo_disco = re.findall(r'(?i)emmc|ssd|hdd|\brom\b', titulo[0])
+            if match_tipo_disco == []:
+                xp_compar_table = 'div[@id="comparison-table-container-6"]//td//text()'
+                compar_table = response.xpath(xp_compar_table).extract()
+                
+                xp_storcomp_text = 'div[@id="comparison-table-container-6"]//td//*[contains(text(), "torage")]/text()'
+                storcomp_text = response.xpath(xp_storcomp_text).extract_first()
+                
+                if storcomp_text is not None:
+                    info_disco = compar_table[compar_table.index(storcomp_text) + 1]
+                    tipo_disco = re.findall('(?i)(?<=gb).*', info_disco)
+            elif len(match_tipo_disco) > 1: 
                 tipo_disco = ['Hybrid']
             else: 
                 tipo_disco = match_tipo_disco
+                
             
         elif values_set[8] != []:
             tipo_disco = [re.findall('(?i)(?<=gb|tb).*', values_set[8][0])[0] + '(Verificar)']
@@ -269,8 +308,7 @@ class AmazonSpider(scrapy.Spider):
                'Laptop_Dimensiones': values_set[16],
                'Laptop_Color': values_set[17],
                'Laptop_DBateria': values_set[18],
-               'Laptop_DBateria': values_set[19]}
-        
+               'Laptop_DBateria': values_set[19]}        
         
         
     

@@ -66,6 +66,7 @@ RETRY_TIMES = 5  #agregado
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'amazon_scraper.pipelines.AmazonScraperPipeline': 300,
+    'amazon_scraper.pipelines.DuplicatesPipeline': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -88,3 +89,10 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+FEEDS = {
+    '/home/studio-lab-user/prueba.csv': {
+        'format': 'csv',
+        'encoding': 'ascii'  
+    }
+}
