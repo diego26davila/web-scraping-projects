@@ -91,7 +91,7 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FEEDS = {
-    '/home/studio-lab-user/prueba.csv': {
+    'file:C:/Users/DIEGODAVILA/Desktop/prueba10.csv': {
         'format': 'csv',
         'encoding': 'ascii'  
     }
