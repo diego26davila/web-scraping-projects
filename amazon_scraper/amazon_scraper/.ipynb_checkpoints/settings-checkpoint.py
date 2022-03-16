@@ -89,10 +89,3 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-FEEDS = {
-    'file:C:/Users/DIEGODAVILA/Desktop/prueba10.csv': {
-        'format': 'csv',
-        'encoding': 'ascii'  
-    }
-}

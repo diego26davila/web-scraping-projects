@@ -1,4 +1,4 @@
-# Scrapy settings for amazon_scraper project
+# Scrapy settings for linio_scraper project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,10 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'amazon_scraper'
+BOT_NAME = 'linio_scraper'
 
-SPIDER_MODULES = ['amazon_scraper.spiders']
-NEWSPIDER_MODULE = 'amazon_scraper.spiders'
+SPIDER_MODULES = ['linio_scraper.spiders']
+NEWSPIDER_MODULE = 'linio_scraper.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -47,13 +47,13 @@ RETRY_TIMES = 5  #agregado
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'amazon_scraper.middlewares.AmazonScraperSpiderMiddleware': 543,
+#    'linio_scraper.middlewares.LinioScraperSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'amazon_scraper.middlewares.AmazonScraperDownloaderMiddleware': 543,
+#    'linio_scraper.middlewares.LinioScraperDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -65,8 +65,8 @@ RETRY_TIMES = 5  #agregado
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'amazon_scraper.pipelines.AmazonScraperPipeline': 300,
-    'amazon_scraper.pipelines.DuplicatesPipeline': 400
+    'linio_scraper.pipelines.LinioScraperPipeline': 300,
+    'linio_scraper.pipelines.DuplicatesPipeline': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

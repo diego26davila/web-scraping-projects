@@ -6,10 +6,9 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from scrapy.exceptions import DropItem
 
 
-class AmazonScraperPipeline:
+class LinioScraperPipeline:
     def process_item(self, item, spider):
         for k, v in item.items():
             if v == []:
@@ -17,13 +16,14 @@ class AmazonScraperPipeline:
                 continue
             
             if k == 'Laptop_Precio':
-                item[k] = v[0].replace(',','').replace('$','').strip()
+                item[k] = v[0].replace(',','').replace('S/','').strip()
                 continue
             
             item[k] = v[0].encode("ascii", "ignore").decode().strip()
             
         return item
 
+    
 class DuplicatesPipeline:
 
     def __init__(self):
@@ -31,9 +31,8 @@ class DuplicatesPipeline:
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        if adapter['Laptop_Codigo'] in self.ids_seen:
+        if adapter['Laptop_SKU'] in self.ids_seen:
             raise DropItem(f"Duplicate item found: {item!r}")
         else:
-            self.ids_seen.add(adapter['Laptop_Codigo'])
+            self.ids_seen.add(adapter['Laptop_SKU'])
             return item
-        
