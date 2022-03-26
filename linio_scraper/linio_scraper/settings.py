@@ -66,7 +66,8 @@ RETRY_TIMES = 5  #agregado
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'linio_scraper.pipelines.LinioScraperPipeline': 300,
-    'linio_scraper.pipelines.DuplicatesPipeline': 400
+    'linio_scraper.pipelines.DuplicatesPipeline': 400,
+    'linio_scraper.pipelines.MongoPipeline': 500
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -89,3 +90,6 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+MONGO_URI = 'mongodb+srv://davorita26:OO3JuQRz8tW8QFru@diegocluster.mxsdv.mongodb.net/?retryWrites=true&w=majority'
+MONGO_DATABASE = 'linio_scraping'
