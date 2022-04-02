@@ -1,12 +1,19 @@
-import scrapy, re                              
+import scrapy, re 
+import random, requests                             
 from urllib.parse import urlencode, urljoin     
 
-API_KEY = 'd0f7996203a08327d1821be5ae8e9a9c'   #crear una cuenta en Scraper API (u otro API) para obtener la clave de la API( scraperapi.com)  Scraper API brinda diferentes direcciones IP (proxyes) para poder realizar el scraping en sitios como Amazon.
+API_KEY = ''   #crear una cuenta en Scraper API (u otro API) para obtener la clave de la API( scraperapi.com)  Scraper API brinda diferentes direcciones IP (proxyes) para poder realizar el scraping en sitios como Amazon.
 
 def get_url(url):       #Modifica la url para conectar con la API
     payload = {'api_key': API_KEY, 'url': url, 'country_code': 'us'}
     proxy_url = 'http://api.scraperapi.com/?' + urlencode(payload)
     return proxy_url
+
+def random_proxy():
+    ips = requests.get("http://localhost:8000").json()
+    return random.choice(ips['ips'])
+
+headers = { 'proxies': {"http": random_proxy(), "https": random_proxy()}}
 
 queries = ['laptops']    #Se realizará la busqueda solo de laptops. Pueden agregarse más a la lista. Pero cuidado con los limites del plan gratis de Scraper API (5000 requests por mes)
 
@@ -16,21 +23,21 @@ class AmazonSpider(scrapy.Spider):
     def start_requests(self):       #Se generan las solicitudes
         for query in queries:
             url = 'https://www.amazon.com/s?' + urlencode({'k': query })    #se construye la url para acceder a la pagina del catalogo
-            yield scrapy.Request(get_url(url), callback=self.parse_keyword_response) 
+            yield scrapy.Request(url=url, callback=self.parse_keyword_response, headers=headers) 
             
     def parse_keyword_response(self, response):
         products = response.xpath('//*[@data-asin]')  #se extraen todos los codigos de los productos del catalogo en la presente pagina
         for product in products:
             codigo = product.xpath('@data-asin').extract_first()           
             product_url = f'https://www.amazon.com/dp/{codigo}'        #se construye la url para acceder a la página de cada producto
-            yield scrapy.Request(url=get_url(product_url), callback=self.parse_product_page, meta={'codigo': codigo}) 
+            yield scrapy.Request(url=product_url, callback=self.parse_product_page, meta={'codigo': codigo}, headers=headers) 
             # La respuesta del Request se envia a la funcion callback 'parse_product_page' con la metadata
             
         next_page = response.xpath('//div[@class="a-section a-text-center s-pagination-container"]//a[@class = "s-pagination-item s-pagination-next s-pagination-button s-pagination-separator"]/@href').extract_first()  #se busca si hay una pagina siguiente
         if next_page:
             print(f'TURNING TO NEXT PAGE')
             next_url = urljoin('https://www.amazon.com',next_page) #se construye la url de la siguiente pagina
-            yield scrapy.Request(url=get_url(next_url), callback=self.parse_keyword_response)   
+            yield scrapy.Request(url=next_url, callback=self.parse_keyword_response, headers=headers)   
             #se crea un nuevo request para extraer la informacion de la siguiente pagina
 
     def parse_product_page(self, response):

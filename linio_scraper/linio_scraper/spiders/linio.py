@@ -1,4 +1,6 @@
-import scrapy, re                              
+import scrapy, re    
+import random
+import requests                           
 from urllib.parse import urlencode, urljoin     
 
 API_KEY = ''   #crear una cuenta en Scraper API (u otro API) para obtener la clave de la API( scraperapi.com)  Scraper API brinda diferentes direcciones IP (proxyes) para poder realizar el scraping en sitios como Amazon.
