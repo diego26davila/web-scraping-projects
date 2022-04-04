@@ -66,7 +66,7 @@ RETRY_TIMES = 5  #agregado
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'amazon_scraper.pipelines.AmazonScraperPipeline': 300,
-    'amazon_scraper.pipelines.DuplicatesPipeline': 400
+ #   'amazon_scraper.pipelines.DuplicatesPipeline': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

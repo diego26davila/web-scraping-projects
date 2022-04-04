@@ -9,16 +9,16 @@ def get_url(url):       #Modifica la url para conectar con la API
     proxy_url = 'http://api.scraperapi.com/?' + urlencode(payload)
     return proxy_url
 
-def random_proxy():
-    ips = requests.get("http://localhost:8000").json()
-    return random.choice(ips['ips'])
+#def random_proxy():
+#    ips = requests.get("http://localhost:8000").json()
+#    return random.choice(ips['ips'])
 
-headers = { 'proxies': {"http": random_proxy(), "https": random_proxy()}}
+#headers = { 'proxies': {"http": random_proxy(), "https": random_proxy()}}
 
 queries = ['laptops']    #Se realizará la busqueda solo de laptops. Pueden agregarse más a la lista. Pero cuidado con los limites del plan gratis de Scraper API (5000 requests por mes)
 
 class AmazonSpider(scrapy.Spider):
-    name = 'amazon2'      #Nombre del spider. Se utilizara para correr el codigo luego
+    name = 'amazon'      #Nombre del spider. Se utilizara para correr el codigo luego
     
     def start_requests(self):       #Se generan las solicitudes
         for query in queries:
