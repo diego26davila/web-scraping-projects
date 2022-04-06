@@ -49,6 +49,22 @@ class AmazonSpider(scrapy.Spider):
         if titulo == []:
             return
 
+        costo_laptop = response.xpath('//div[@id="exportsBuybox"]//span[contains(text(),"$")]/text()').extract()
+        if costo_laptop != []:
+            costo_laptop = [costo_laptop[0]]
+        listprice_laptop = response.xpath('//div[@id="corePrice_desktop"]//*[contains(text(),"List Price")]/following-sibling::*//*[@class="a-offscreen"]/text()').extract()
+        
+        costo_envio_dep = []
+        delivery_date = []
+        availability = ['NO PERU']
+        delivery_noperu = response.xpath('//div[@id="mir-layout-DELIVERY_BLOCK"]//span[contains(@class,"a-color-error")]').extract()
+        if delivery_noperu == []:
+            costo_envio_dep = response.xpath('//div[@id="exports_desktop_qualifiedBuybox_tlc_feature_div"]//span[@class="a-size-base a-color-secondary"]/text()').extract()
+
+            delivery_date = response.xpath('//div[@id="mir-layout-DELIVERY_BLOCK-slot-PRIMARY_DELIVERY_MESSAGE_LARGE"]//span[@class="a-text-bold"]/text()').extract()
+                
+            availability = response.xpath('//div[@id="availability"]/span/text()').extract()
+
         marca_cpu = re.findall('(?i)(intel|amd)',titulo[0])
         marca_cpu = list(set(i.upper() for i in marca_cpu))
         if len(marca_cpu) != 1:
@@ -71,22 +87,8 @@ class AmazonSpider(scrapy.Spider):
         else:
             cpu_modelo = ['FALTAAAA']
 
-
-        costo_laptop = response.xpath('//div[@id="exportsBuybox"]//span[contains(text(),"$")]/text()').extract()
-        if costo_laptop != []:
-            costo_laptop = [costo_laptop[0]]
-        listprice_laptop = response.xpath('//div[@id="corePrice_desktop"]//*[contains(text(),"List Price")]/following-sibling::*//*[@class="a-offscreen"]/text()').extract()
-        
-        costo_envio_dep = []
-        delivery_date = []
-        availability = ['NO PERU']
-        delivery_noperu = response.xpath('//div[@id="mir-layout-DELIVERY_BLOCK"]//span[contains(@class,"a-color-error")]').extract()
-        if delivery_noperu == []:
-            costo_envio_dep = response.xpath('//div[@id="exports_desktop_qualifiedBuybox_tlc_feature_div"]//span[@class="a-size-base a-color-secondary"]/text()').extract()
-
-            delivery_date = response.xpath('//div[@id="mir-layout-DELIVERY_BLOCK-slot-PRIMARY_DELIVERY_MESSAGE_LARGE"]//span[@class="a-text-bold"]/text()').extract()
-                
-            availability = response.xpath('//div[@id="availability"]/span/text()').extract()
+        ram_size = re.findall(r'(?i)\d+.*gb.*ram', titulo[0])
+        disc_size = re.findall(r'(?i)(\d+\s*gb(?!.*ram)|\d+\s*tb(?!.*ram))(.*hdd|.*ssd|.*emmc)')
 
 
         yield {'Laptop_Codigo': codigo, 
@@ -96,6 +98,7 @@ class AmazonSpider(scrapy.Spider):
                'Costo_Envio_Dep': costo_envio_dep,
                'CPU_Marca': marca_cpu,
                'CPU_Modelo': cpu_modelo,
+               'RAM_Capacidaad': ram_size,
                'Fecha_Delivery': delivery_date,
                'Stock': availability
                }
